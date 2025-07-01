@@ -30,14 +30,12 @@ export default function HomePage() {
 				<div className="flex flex-1 flex-col items-center justify-center p-4">
 					<div className="mx-auto w-full max-w-md space-y-6">
 						{/* Title section with pixel art styling */}
-						<div className="mb-8 space-y-2 text-center">
-							<div className="relative inline-block">
-								<h1 className="relative font-bold text-accent text-xl tracking-wider">
-									PIXEL → VECTOR
-									<div className="-inset-1 -z-10 absolute border border-accent/30 bg-accent/10" />
-								</h1>
+						<div className="mb-4 space-y-4 text-center">
+							<div className="relative font-bold text-accent text-xl tracking-wider flex w-full justify-between px-4">
+								<span className="text-accent">PIXEL</span> <ArrowRight /> <span className="text-accent">VECTOR</span>
+								<div className="-inset-1 -z-10 absolute border border-accent/30 bg-accent/10" />
 							</div>
-							<p className="mx-auto max-w-xs text-muted-foreground text-xs leading-relaxed">
+							<p className="mx-auto w-full text-muted-foreground text-md leading-relaxed">
 								Convert PNG pixel art to clean SVG/EPS vectors
 							</p>
 						</div>
