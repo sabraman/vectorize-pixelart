@@ -1,4 +1,4 @@
-import * as test from 'tape'
+import test from 'tape'
 import {SVG, EPS} from '../src/utils'
 
 test('compose SVG image', (t) => {
@@ -24,7 +24,7 @@ test('compose EPS image', (t) => {
 
   t.ok(eps.path(
     [[0, 0], [10, 0], [10, 1], [1, 1], [2, 1], [2, 0]], [0, 0, 0, 0])
-    .match(/.+\srg.+\sl.+\sf/s), 'correct path')
+    .match(/rg.*l.*f/s), 'correct path')
 
   t.ok(eps.footer().match(/%%EOF/), 'correct footer')
 

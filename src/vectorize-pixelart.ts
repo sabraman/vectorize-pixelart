@@ -3,39 +3,46 @@
 import { createReadStream, createWriteStream } from 'fs'
 import { PNG } from 'pngjs'
 import { SVG, EPS, PNGImageData, Path, Pixel } from './utils'
-import * as Process from 'process'
 import { ContourTracing } from './contour-tracing'
+import { promisify } from 'util'
+import { pipeline } from 'stream'
 
-const OutputFileFormats: { [_: string]: any } = {
+const pipelineAsync = promisify(pipeline)
+
+const OutputFileFormats: { [key: string]: any } = {
   svg: SVG,
   eps: EPS
 }
 
-const targetSize = 2 ** 23
-const inputFileName = Process.argv[2]
-const outputFileName: string = Process.argv[3]
+async function main () {
+  const targetSize = 2 ** 23
+  const inputFileName = process.argv[2]
+  const outputFileName: string = process.argv[3]
 
-if (Process.argv.length < 4) {
-  Process.stdout.write(
-    `usage: ${Process.argv[1]} <input png image> <output svg|eps vector>\n`)
-  Process.exit(1)
-}
+  if (process.argv.length < 4) {
+    console.log(
+    `usage: ${process.argv[1]} <input png image> <output svg|eps vector>\n`)
+    process.exit(1)
+  }
 
-const extension = outputFileName.split('.').pop() ?? ''
-const VectorFormatterClass = OutputFileFormats[extension]
-if (VectorFormatterClass == null) { throw new Error('Unsupported file format ' + outputFileName) }
+  const extension = outputFileName.split('.').pop() ?? ''
+  const VectorFormatterClass = OutputFileFormats[extension]
+  if (VectorFormatterClass == null) { throw new Error('Unsupported file format ' + outputFileName) }
 
-createReadStream(inputFileName)
-  .pipe(new PNG())
-  .on('parsed', function () {
-    // TODO check files exists
+  try {
+    const png = new PNG()
+    await pipelineAsync(
+      createReadStream(inputFileName),
+      png
+    )
+
     const vectorOut = createWriteStream(outputFileName)
 
-    const pixelMultiplier = Math.sqrt(targetSize / (this.height * this.width))
+    const pixelMultiplier = Math.sqrt(targetSize / (png.height * png.width))
 
-    const image = new PNGImageData(this)
+    const image = new PNGImageData(png)
 
-    const vectorFormatter = new VectorFormatterClass(this.height, this.width, pixelMultiplier)
+    const vectorFormatter = new VectorFormatterClass(png.height, png.width, pixelMultiplier)
     vectorOut.write(vectorFormatter.header())
 
     const tracer = new ContourTracing(image)
@@ -44,4 +51,14 @@ createReadStream(inputFileName)
     })
 
     vectorOut.write(vectorFormatter.footer())
-  })
+    vectorOut.end()
+  } catch (error) {
+    console.error('Error processing image:', error)
+    process.exit(1)
+  }
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})

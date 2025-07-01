@@ -1,5 +1,3 @@
-'use strict'
-
 import type { PNG } from 'pngjs'
 
 const DEFAULT_MULTIPLIER = 1
@@ -21,7 +19,6 @@ abstract class Image {
 
   abstract header (): string
   abstract footer (): string
-  // abstract pixel(y: number, x: number, pixel: Pixel): string | undefined
   abstract path (contour: Path, pixel: Pixel): string
 }
 
@@ -35,18 +32,6 @@ export class SVG extends Image {
 
   footer (): string {
     return '</svg>\n'
-  }
-
-  pixel (y: number, x: number, pixel: Pixel): string {
-    if (pixel[3] < 255) {
-      return ''
-    }
-
-    const rgba = pixel.join(', ')
-    return `\
-    <rect x="${x * this.multiplier}" y="${y * this.multiplier}" \
-width="${1 * this.multiplier}" height="${1 * this.multiplier}" \
-style="fill:rgba(${rgba})" />\n`
   }
 
   path (contour: Path, pixel: Pixel): string {
@@ -109,7 +94,7 @@ showpage
     for (let i = 1; i < contour.length; i++) {
       path += ` ${contour[i][1] * m} ${(height - contour[i][0]) * m} l`
     }
-    path += ' z\nf\n'
+    path += ' z\n/f\n'
 
     return path
   }
@@ -118,16 +103,14 @@ showpage
 const BYTES_PER_PIXEL = 4
 
 export class PNGImageData {
-  private readonly png: PNG
   private readonly data: Buffer
 
   readonly width: number
   readonly height: number
 
   constructor (png: PNG) {
-    this.png = png
-    this.width = this.png.width
-    this.height = this.png.height
+    this.width = png.width
+    this.height = png.height
     this.data = png.data
   }
 
@@ -145,6 +128,6 @@ export class PNGImageData {
 
   getPixel (y: number, x: number): Pixel {
     const offset = (y * this.width + x) * BYTES_PER_PIXEL
-    return Array.prototype.slice.call(this.data, offset, offset + BYTES_PER_PIXEL) as Pixel
+    return [this.data[offset], this.data[offset + 1], this.data[offset + 2], this.data[offset + 3]]
   }
 }
