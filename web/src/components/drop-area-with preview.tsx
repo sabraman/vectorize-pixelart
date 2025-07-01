@@ -406,14 +406,21 @@ export default function DropAreaWithPreview() {
 		<div className="w-full space-y-3">
 			{/* Main drop area */}
 			<div className="relative w-full">
-				<button
-					type="button"
+				<div
 					onDragEnter={handleDragEnter}
 					onDragLeave={handleDragLeave}
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
 					onClick={openFileDialog}
-					aria-label="Upload image file"
+					// biome-ignore lint/a11y/useSemanticElements: Cannot use button element due to nested button (remove button)
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							openFileDialog();
+						}
+					}}
 					data-dragging={isDragging || undefined}
 					className="group relative w-full cursor-pointer overflow-hidden border-2 border-accent/40 border-dashed bg-background/50 backdrop-blur-sm transition-all duration-200 hover:border-accent/60 hover:bg-accent/5 focus:border-accent focus:bg-accent/5 focus:outline-none data-[dragging=true]:scale-[1.02] data-[dragging=true]:border-accent data-[dragging=true]:bg-accent/10"
 				>
@@ -511,7 +518,7 @@ export default function DropAreaWithPreview() {
 							<div className="absolute right-2 bottom-2 h-2 w-2 border-accent/20 border-r-2 border-b-2 transition-colors group-hover:border-accent/50" />
 						</div>
 					)}
-				</button>
+				</div>
 			</div>
 
 			{/* Error display */}

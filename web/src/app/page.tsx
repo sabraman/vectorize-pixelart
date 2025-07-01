@@ -26,28 +26,6 @@ export default function HomePage() {
 
 			{/* Main content container */}
 			<div className="relative z-10 flex min-h-screen flex-col">
-				{/* Header */}
-				<header className="border-accent/30 border-b-2 p-4">
-					<div className="mx-auto flex max-w-4xl items-center justify-between">
-						<div className="flex items-center gap-2">
-							<div className="relative h-6 w-6 border border-accent-foreground bg-accent">
-								<div className="absolute inset-1 bg-background" />
-								<div className="absolute inset-2 bg-accent" />
-							</div>
-							<h1 className="font-bold text-accent text-sm">VECTORIZE</h1>
-						</div>
-						<a
-							href="https://github.com/und3f/vectorize-pixelart"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-accent"
-						>
-							<Github size={12} />
-							<span className="hidden sm:inline">SOURCE</span>
-						</a>
-					</div>
-				</header>
-
 				{/* Main content */}
 				<div className="flex flex-1 flex-col items-center justify-center p-4">
 					<div className="mx-auto w-full max-w-md space-y-6">
@@ -81,8 +59,20 @@ export default function HomePage() {
 					</div>
 				</div>
 
-				{/* Bottom decorative border */}
-				<div className="h-1 bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+				{/* Bottom footer with GitHub link */}
+				<footer className="border-accent/30 border-t p-4">
+					<div className="mx-auto flex max-w-md items-center justify-center text-xs">
+						<a
+							href="https://github.com/und3f/vectorize-pixelart"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-accent"
+						>
+							<Github size={10} />
+							<span>SOURCE</span>
+						</a>
+					</div>
+				</footer>
 			</div>
 		</main>
 	);
