@@ -1,7 +1,7 @@
-import { expect, afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup } from "@testing-library/react";
+import { afterEach, expect } from "vitest";
 
 // Runs a cleanup after each test case
 afterEach(() => {
-  cleanup();
-}); 
+	cleanup();
+});
