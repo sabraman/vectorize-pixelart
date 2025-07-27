@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EPS, SVG } from "../src/lib/vectorize/utils";
+import { PDF, SVG } from "../src/lib/vectorize/utils";
 
 describe("SVG Image Composer", () => {
 	it("should create valid SVG header", () => {
@@ -41,18 +41,19 @@ describe("SVG Image Composer", () => {
 	});
 });
 
-describe("EPS Image Composer", () => {
-	it("should create valid EPS header", () => {
-		const eps = new EPS(100, 200, 1.5);
-		const header = eps.header();
+describe("PDF Image Composer", () => {
+	it("should create valid PDF header", () => {
+		const pdf = new PDF(100, 200, 1.5);
+		const header = pdf.header();
 
-		expect(header).toContain("%!PS-Adobe-3.0 EPSF-3.0");
-		expect(header).toContain("%%BoundingBox: 0 0 300 150");
+		expect(header).toContain("%PDF-1.4");
+		expect(header).toContain("/Type /Catalog");
+		expect(header).toContain("/MediaBox [0 0 300 150]");
 	});
 
-	it("should create valid EPS path", () => {
-		const eps = new EPS(100, 100);
-		const path = eps.path(
+	it("should create valid PDF path", () => {
+		const pdf = new PDF(100, 100);
+		const path = pdf.path(
 			[
 				[10, 10],
 				[20, 10],
@@ -62,22 +63,22 @@ describe("EPS Image Composer", () => {
 			[255, 0, 0, 255],
 		);
 
-		expect(path).toContain("1.000 0.000 0.000  rg");
-		expect(path).toContain("10 90 m");
+		expect(path).toBe("");
 	});
 
 	it("should return empty string for empty contour", () => {
-		const eps = new EPS(100, 100);
-		const path = eps.path([], [255, 0, 0, 255]);
+		const pdf = new PDF(100, 100);
+		const path = pdf.path([], [255, 0, 0, 255]);
 
 		expect(path).toBe("");
 	});
 
-	it("should create valid EPS footer", () => {
-		const eps = new EPS(100, 100);
-		const footer = eps.footer();
+	it("should create valid PDF footer", () => {
+		const pdf = new PDF(100, 100);
+		const footer = pdf.footer();
 
-		expect(footer).toContain("showpage");
+		expect(footer).toContain("xref");
+		expect(footer).toContain("trailer");
 		expect(footer).toContain("%%EOF");
 	});
 });

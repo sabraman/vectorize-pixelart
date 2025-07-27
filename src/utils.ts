@@ -49,54 +49,111 @@ export class SVG extends Image {
   }
 }
 
-export class EPS extends Image {
+export class PDF extends Image {
+  private contentStream: string = ''
+
   header (): string {
-    return `\
-%!PS-Adobe-3.0 EPSF-3.0
-%%Creator: vectorize-pixelart (https://github.com/und3f/vectorize-pixelart)
-%%BoundingBox: 0 0 ${this.width * this.multiplier} ${this.height * this.multiplier}
-%%Pages: 1
-%%EndComments
-%%BeginProlog
-/m { moveto } bind def
-/l { lineto } bind def
-/z { closepath } bind def
-/f { fill } bind def
-/rg { setrgbcolor } bind def
-%%EndProlog
-%%Page: 1 1
-%%BeginPageSetup
-%%PageBoundingBox: 0 0 ${this.width * this.multiplier} ${this.height * this.multiplier}
-%%EndPageSetup
+    const width = this.width * this.multiplier
+    const height = this.height * this.multiplier
+    
+    return `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 ${width} ${height}]
+/Contents 4 0 R
+/Resources <<
+>>
+>>
+endobj
+
 `
   }
 
   footer (): string {
-    return `\
-showpage
-%%Trailer
+    const contentLength = Buffer.byteLength(this.contentStream, 'utf8')
+    
+    // Write content object with correct length
+    const contentObj = `4 0 obj
+<<
+/Length ${contentLength}
+>>
+stream
+${this.contentStream}endstream
+endobj
+
+`
+    
+    // Calculate xref offset
+    const headerLength = Buffer.byteLength(this.header(), 'utf8')
+    const contentObjLength = Buffer.byteLength(contentObj, 'utf8')
+    const xrefOffset = headerLength + contentObjLength
+    
+    return contentObj + `xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+${this.padOffset(headerLength)} 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+${xrefOffset}
 %%EOF
 `
   }
 
+  private padOffset(offset: number): string {
+    return offset.toString().padStart(10, '0')
+  }
+
   path (contour: Path, pixel: Pixel): string {
+    if (contour.length === 0) return ''
+    
     const m = this.multiplier
-    const height = this.height
-
-    let path = ''
-    for (let i = 0; i < 3; i++) {
-      path += (pixel[i] / 255).toFixed(3) + ' '
-    }
-    path += ' rg\n'
-
+    const height = this.height * m
+    
+    // Convert RGB values to PDF color format (0-1 range)
+    const r = (pixel[0] / 255).toFixed(3)
+    const g = (pixel[1] / 255).toFixed(3)
+    const b = (pixel[2] / 255).toFixed(3)
+    
+    let path = `${r} ${g} ${b} rg\n` // Set fill color
+    
+    // Start path
     const move = contour[0]
-    path += `${(move[1]) * m} ${(height - move[0]) * m} m`
+    path += `${(move[1]) * m} ${height - (move[0]) * m} m\n` // moveto
+    
+    // Add line segments
     for (let i = 1; i < contour.length; i++) {
-      path += ` ${contour[i][1] * m} ${(height - contour[i][0]) * m} l`
+      const point = contour[i]
+      path += `${(point[1]) * m} ${height - (point[0]) * m} l\n` // lineto
     }
-    path += ' z\n/f\n'
-
-    return path
+    
+    path += 'f\n' // fill
+    
+    this.contentStream += path
+    return ''
   }
 }
 

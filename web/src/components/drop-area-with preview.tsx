@@ -32,7 +32,7 @@ export default function DropAreaWithPreview() {
 	const maxSizeMB = 2;
 	const maxSize = maxSizeMB * 1024 * 1024; // 2MB default
 	const [processingFormat, setProcessingFormat] = useState<
-		"svg" | "eps" | null
+		"svg" | "pdf" | null
 	>(null);
 	const [isUpscaling, setIsUpscaling] = useState(false);
 	const [customUpscale, setCustomUpscale] = useState("10");
@@ -177,7 +177,7 @@ export default function DropAreaWithPreview() {
 		};
 	}, [isProcessing, processingFormat, isUpscaling]);
 
-	const handleExport = async (format: "svg" | "eps") => {
+	const handleExport = async (format: "svg" | "pdf") => {
 		if (!files[0]) return;
 
 		setProcessingFormat(format);
@@ -206,7 +206,7 @@ export default function DropAreaWithPreview() {
 
 				const outputFilename = `${files[0].file.name.split(".")[0]}.${format}`;
 				const mimeType =
-					format === "svg" ? "image/svg+xml" : "application/postscript";
+					format === "svg" ? "image/svg+xml" : "application/pdf";
 
 				downloadString(result, outputFilename, mimeType);
 			} else {
@@ -582,8 +582,8 @@ export default function DropAreaWithPreview() {
 						<p className="text-center font-bold text-accent text-xs tracking-wider">
 							{processingFormat === "svg" &&
 								`SVG ${Math.round(processingProgress)}%`}
-							{processingFormat === "eps" &&
-								`EPS ${Math.round(processingProgress)}%`}
+							{processingFormat === "pdf" &&
+								`PDF ${Math.round(processingProgress)}%`}
 							{isUpscaling && `UPSCALE ${Math.round(processingProgress)}%`}
 							{isProcessing &&
 								!processingFormat &&
@@ -635,16 +635,16 @@ export default function DropAreaWithPreview() {
 							<Button
 								variant="outline"
 								size="sm"
-								onClick={() => handleExport("eps")}
+								onClick={() => handleExport("pdf")}
 								disabled={isAnyProcessing}
 								className="text-xs"
 							>
-								{processingFormat === "eps" ? (
+								{processingFormat === "pdf" ? (
 									<Loader size={12} className="animate-spin" />
 								) : (
 									<File size={12} />
 								)}
-								EPS
+								PDF
 							</Button>
 						</div>
 					</div>

@@ -56,7 +56,7 @@ export default function HomePage() {
 								<div className="-inset-1 -z-10 absolute border border-accent/30 bg-accent/10" />
 							</div>
 							<p className="mx-auto w-full text-muted-foreground text-md leading-relaxed">
-								Convert PNG pixel art to clean SVG/EPS vectors
+								Convert PNG pixel art to clean SVG/PDF vectors
 							</p>
 						</div>
 
@@ -81,7 +81,7 @@ export default function HomePage() {
 				<footer className="border-accent/30 border-t p-4">
 					<div className="mx-auto flex max-w-md items-center justify-center text-xs">
 						<a
-							href="https://github.com/und3f/vectorize-pixelart"
+							href="https://github.com/sabraman/vectorize-pixelart"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-accent"

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EPS, SVG } from "../src/lib/vectorize/utils";
+import { PDF, SVG } from "../src/lib/vectorize/utils";
 
 describe("SVG Image Composer", () => {
 	it("should create valid SVG header", () => {
@@ -36,18 +36,19 @@ describe("SVG Image Composer", () => {
 	});
 });
 
-describe("EPS Image Composer", () => {
-	it("should create valid EPS header", () => {
-		const eps = new EPS(101, 102);
-		const header = eps.header();
+describe("PDF Image Composer", () => {
+	it("should create valid PDF header", () => {
+		const pdf = new PDF(101, 102);
+		const header = pdf.header();
 
-		expect(header).toMatch(/%!PS-Adobe-3.0 EPSF-3.0/);
-		expect(header).toContain("%%BoundingBox: 0 0");
+		expect(header).toMatch(/%PDF-1.4/);
+		expect(header).toContain("/Type /Catalog");
+		expect(header).toContain("/MediaBox [0 0");
 	});
 
-	it("should create valid EPS path", () => {
-		const eps = new EPS(101, 102);
-		const path = eps.path(
+	it("should create valid PDF path", () => {
+		const pdf = new PDF(101, 102);
+		const path = pdf.path(
 			[
 				[0, 0],
 				[10, 0],
@@ -59,16 +60,16 @@ describe("EPS Image Composer", () => {
 			[0, 0, 0, 0],
 		);
 
-		// Test for color setting, line commands, and fill
-		expect(path).toMatch(/rg/);
-		expect(path).toMatch(/m/); // moveto
-		expect(path).toMatch(/l/); // lineto
+		// PDF path method returns empty string as content is added to internal stream
+		expect(path).toBe("");
 	});
 
-	it("should create valid EPS footer", () => {
-		const eps = new EPS(101, 102);
-		const footer = eps.footer();
+	it("should create valid PDF footer", () => {
+		const pdf = new PDF(101, 102);
+		const footer = pdf.footer();
 
+		expect(footer).toMatch(/xref/);
+		expect(footer).toMatch(/trailer/);
 		expect(footer).toMatch(/%%EOF/);
 	});
 });

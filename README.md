@@ -1,95 +1,250 @@
-[![build-test](https://github.com/und3f/vectorize-pixelart/actions/workflows/main.yml/badge.svg)](https://github.com/und3f/vectorize-pixelart/actions/workflows/main.yml)
+# 🎨 Vectorize Pixelart
 
-vectorize-pixelart
-==================
+> Convert raster pixel art graphics to clean vector formats (SVG/PDF)
 
-Convert raster pixel art graphics to vector.
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL%203.0--or--later-green.svg)](https://spdx.org/licenses/GPL-3.0-or-later.html)
+[![npm version](https://img.shields.io/npm/v/vectorize-pixelart.svg)](https://www.npmjs.com/package/vectorize-pixelart)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.1.3-blue.svg)](https://www.typescriptlang.org/)
 
-# Installation
+A powerful tool for converting pixel art PNG images into clean, scalable vector formats. Perfect for game developers, artists, and anyone who needs to scale up their pixel art without losing quality.
 
-    $ npm install vectorize-pixelart
+## ✨ Features
 
-# CLI usage
+- **🖼️ PNG to Vector Conversion** - Convert pixel art to SVG or PDF formats
+- **🎯 Contour Tracing** - Intelligent edge detection and path generation
+- **📱 Web Interface** - Modern, mobile-first web app for easy conversion
+- **⚡ CLI Tool** - Command-line interface for batch processing
+- **🔒 Privacy First** - 100% local processing, no uploads or tracking
+- **📦 TypeScript** - Fully typed for better development experience
+- **📄 PDF Support** - Generate proper PDF files with vector paths
 
-You may vectorize PNG image to SVG using next command:
+## 🚀 Quick Start
 
-    $ vectorize-pixelart input.png output.svg
+### CLI Installation
 
-Also EPS output is supported:
-
-    $ vectorize-pixelart input.png output.eps
-
-# Online web usage
-
-The package has been build with a [Browserify](browserify.org) version and
-available online:
-
-http://zasenko.name/vectorize-pixelart.html
-
-Main limitation of the web version is that browser has issues when processing
-large SVG files. As there are no control over image displaying some resulting
-SVG might cause browser hang.
-
-# API
-
-Please check [vectorize-pixelart.js](src/vectorize-pixelart.ts) code.
-
-So, basic usage is next:
-
-1. Read raster image.
-2. Trace image
-
-```js
-var fs  = require('fs'),
-    PNG = require('pngjs').PNG,
-    ContourTracing = require('vectorize-pixelart/contour-tracing'),
-    paUtils = require('vectorize-pixelart/utils');
-
-// PNGImageData provides transparent pixel retrieving/comparasion interface
-let image = new paUtils.PNGImageData(PNG.sync.read(fs.readFileSync('in.png')));
-
-// Vector composer
-let composer = new paUtils.SVG(image.height, image.width);
-
-process.stdout.write(composer.header());
-
-let tracer = new ContourTracing(image);
-tracer.traceContours((contour, pixel) => {
-    // Output next traced contour
-    process.stdout.write(composer.path(contour, pixel));
-})
-
-process.stdout.write(composer.footer());
+```bash
+pnpm add vectorize-pixelart
 ```
 
-## Class: ContourTracing
+### Web App
 
-Trace contours of a given `image`.
+Visit the live web application: [https://vectorize-pixelart.vercel.app/](https://vectorize-pixelart.vercel.app/)
 
-### new ContourTracing(image)
+## 📖 Usage
 
-Object image should contain `height` and `width` information. Also it should
-provide `function comparePixels(y1, x1, y2, x2) { }` and `function getPixel(y1,
-x1)`. See `PNGImageData`.
+### Command Line Interface
 
-### ContourTracing.traceContours(callback)
-Traces contours of a given image and return next contour to callback. The
-callback gets one argument `(contour)` that contains array of contour points 
-`[y, x]`.
+Convert a PNG file to SVG:
 
-# Copyright
+```bash
+vectorize-pixelart input.png output.svg
+```
 
-Copyright (C) 2019-2022 Sergii Zasenko
+Convert to PDF format:
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+```bash
+vectorize-pixelart input.png output.pdf
+```
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+### Programmatic Usage
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+```typescript
+import { PNG } from 'pngjs'
+import { ContourTracing, PNGImageData, SVG, PDF } from 'vectorize-pixelart'
+
+// Read PNG image
+const png = PNG.sync.read(fs.readFileSync('input.png'))
+const image = new PNGImageData(png)
+
+// Create SVG composer
+const svg = new SVG(image.height, image.width)
+
+// Start SVG output
+process.stdout.write(svg.header())
+
+// Trace contours
+const tracer = new ContourTracing(image)
+tracer.traceContours((contour, pixel) => {
+  process.stdout.write(svg.path(contour, pixel))
+})
+
+// End SVG output
+process.stdout.write(svg.footer())
+
+// Or create PDF
+const pdf = new PDF(image.height, image.width)
+process.stdout.write(pdf.header())
+tracer.traceContours((contour, pixel) => {
+  process.stdout.write(pdf.path(contour, pixel))
+})
+process.stdout.write(pdf.footer())
+```
+
+### Web Interface
+
+1. **Drag & Drop** - Simply drag your PNG file onto the web interface
+2. **Preview** - See a live preview of your pixel art
+3. **Convert** - Click to generate vector output
+4. **Download** - Get your SVG or PDF file instantly
+
+## 📄 Output Formats
+
+### SVG Format
+- **Web-friendly** - Perfect for web applications and browsers
+- **Scalable** - Maintains quality at any size
+- **Editable** - Can be modified in vector graphics software
+- **Small file size** - Efficient for web use
+
+### PDF Format
+- **Print-ready** - Perfect for professional printing
+- **Universal compatibility** - Works with all PDF viewers
+- **Vector paths** - Maintains crisp edges at any scale
+- **Professional standard** - Industry-standard format
+
+## 🏗️ Development
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/sabraman/vectorize-pixelart.git
+cd vectorize-pixelart
+
+# Install dependencies
+pnpm install
+
+# Build the project
+pnpm build
+
+# Run tests
+pnpm test
+```
+
+### Web App Development
+
+```bash
+cd web
+pnpm dev
+```
+
+The web app will be available at `http://localhost:3000`
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run specific test file
+pnpm test contour-tracing.test.ts
+```
+
+## 📁 Project Structure
+
+```
+vectorize-pixelart/
+├── src/                    # Core library source
+│   ├── contour-tracing.ts  # Contour detection algorithm
+│   ├── utils.ts           # Utility functions and formatters
+│   └── vectorize-pixelart.ts # CLI entry point
+├── web/                   # Next.js web application
+│   ├── src/
+│   │   ├── app/          # App router pages
+│   │   ├── components/   # React components
+│   │   └── hooks/        # Custom React hooks
+│   └── public/           # Static assets
+└── test/                 # Test files
+```
+
+## 🔧 API Reference
+
+### ContourTracing
+
+The main class for tracing pixel art contours.
+
+```typescript
+class ContourTracing {
+  constructor(image: PNGImageData)
+  traceContours(callback: (contour: Path, pixel: Pixel) => void): void
+}
+```
+
+### PNGImageData
+
+Wrapper for PNG image data with pixel comparison methods.
+
+```typescript
+class PNGImageData {
+  constructor(png: PNG)
+  comparePixels(y1: number, x1: number, y2: number, x2: number): boolean
+  getPixel(y: number, x: number): Pixel
+}
+```
+
+### SVG/PDF Formatters
+
+Vector output formatters for different file formats.
+
+```typescript
+class SVG {
+  constructor(height: number, width: number, pixelMultiplier?: number)
+  header(): string
+  path(contour: Path, pixel: Pixel): string
+  footer(): string
+}
+
+class PDF {
+  constructor(height: number, width: number, pixelMultiplier?: number)
+  header(): string
+  path(contour: Path, pixel: Pixel): string
+  footer(): string
+}
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Run tests: `pnpm test`
+5. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Original algorithm by Sergii Zasenko
+- Built with modern TypeScript and Next.js
+- UI components powered by Radix UI and Tailwind CSS
+
+## 📞 Support
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/sabraman/vectorize-pixelart/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/sabraman/vectorize-pixelart/discussions)
+- 📧 **Email**: [sabraman@yandex.ru](mailto:sabraman@yandex.ru)
+
+---
+
+<div align="center">
+  <p>
+    <a href="https://github.com/sabraman/vectorize-pixelart">GitHub</a> •
+    <a href="https://www.npmjs.com/package/vectorize-pixelart">npm</a> •
+    <a href="https://vectorize-pixelart.vercel.app/">Web App</a>
+  </p>
+</div>

@@ -1,29 +1,99 @@
-# Create T3 App
+# Vectorize Pixelart - Web Interface
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Web interface for converting pixel art to vector formats (SVG and PDF).
 
-## What's next? How do I make an app with this?
+## 🚀 Quick Start
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+```bash
+# Install dependencies
+pnpm install
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+# Run in development mode
+pnpm dev
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+# Build for production
+pnpm build
 
-## Learn More
+# Run tests
+pnpm test
+```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## ✨ Features
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- **🖼️ Image Upload** - Drag & drop PNG files or select via dialog
+- **⚡ Instant Conversion** - 100% local processing, no server uploads
+- **📄 Two Formats** - Export to SVG (for web) and PDF (for print)
+- **📱 Responsive Design** - Works on all devices
+- **🎨 Modern UI** - Beautiful and intuitive interface
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## 🛠️ Technologies
 
-## How do I deploy this?
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Full type safety
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - UI components
+- **Vitest** - Testing
+- **PNGJS** - PNG image processing
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## 📁 Project Structure
+
+```
+web/
+├── src/
+│   ├── app/                 # Next.js App Router
+│   ├── components/          # React components
+│   │   └── ui/             # shadcn/ui components
+│   ├── hooks/              # React hooks
+│   ├── lib/                # Utilities and libraries
+│   │   └── vectorize/      # Vectorization logic
+│   └── styles/             # Global styles
+├── __tests__/              # Tests
+└── public/                 # Static files
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode (use --watch flag)
+pnpm test --watch
+
+# Run tests with coverage (use --coverage flag)
+pnpm test --coverage
+```
+
+## 🚀 Deployment
+
+The application is ready to deploy on:
+
+- **Vercel** - Recommended for Next.js
+- **Netlify** - Alternative option
+- **Docker** - For containerization
+
+## 🔧 Development
+
+### Adding New Components
+
+```bash
+# Create a new component
+pnpm dlx shadcn@latest add button
+```
+
+### Vectorization Structure
+
+The main vectorization logic is located in `src/lib/vectorize/`:
+
+- `contour-tracing.ts` - Contour tracing algorithm
+- `utils.ts` - SVG and PDF formatters
+
+### Adding New Formats
+
+1. Create a new class in `utils.ts` that extends `Image`
+2. Implement `header()`, `footer()`, `path()` methods
+3. Add support in `use-vectorize.ts`
+
+## 📄 License
+
+MIT License - see [LICENSE](../LICENSE) in the project root.

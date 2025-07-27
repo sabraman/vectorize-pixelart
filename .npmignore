@@ -8,3 +8,4 @@ vectorize-pixelart-bundle.js
 .travis.yml
 src
 tsconfig.json
+*.pdf

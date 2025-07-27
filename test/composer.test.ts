@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {SVG, EPS} from '../src/utils'
+import {SVG, PDF} from '../src/utils'
 
 describe('Image Composers', () => {
   describe('SVG Image Composer', () => {
@@ -18,18 +18,20 @@ describe('Image Composers', () => {
     })
   })
 
-  describe('EPS Image Composer', () => {
-    it('should compose EPS image correctly', () => {
-      const eps = new EPS(101, 102)
+  describe('PDF Image Composer', () => {
+    it('should compose PDF image correctly', () => {
+      const pdf = new PDF(101, 102)
 
-      const header = eps.header()
-      expect(header).toMatch(/%!PS-Adobe-3.0 EPSF-3.0/)
+      const header = pdf.header()
+      expect(header).toMatch(/%PDF-1.4/)
       
-      const path = eps.path(
+      const path = pdf.path(
         [[0, 0], [10, 0], [10, 1], [1, 1], [2, 1], [2, 0]], [0, 0, 0, 0])
-      expect(path).toMatch(/rg.*l.*f/s)
+      expect(path).toBe('')
       
-      const footer = eps.footer()
+      const footer = pdf.footer()
+      expect(footer).toMatch(/xref/)
+      expect(footer).toMatch(/trailer/)
       expect(footer).toMatch(/%%EOF/)
     })
   })

@@ -5,7 +5,7 @@ import { Press_Start_2P } from "next/font/google";
 
 export const metadata: Metadata = {
 	title: "Vectorize Pixel Art",
-	description: "Convert pixel art PNG images to SVG or EPS vector graphics",
+	description: "Convert pixel art PNG images to SVG or PDF vector graphics",
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

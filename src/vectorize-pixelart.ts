@@ -2,7 +2,7 @@
 
 import { createReadStream, createWriteStream } from 'fs'
 import { PNG } from 'pngjs'
-import { SVG, EPS, PNGImageData, Path, Pixel } from './utils'
+import { SVG, PDF, PNGImageData, Path, Pixel } from './utils'
 import { ContourTracing } from './contour-tracing'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
@@ -11,7 +11,7 @@ const pipelineAsync = promisify(pipeline)
 
 const OutputFileFormats: { [key: string]: any } = {
   svg: SVG,
-  eps: EPS
+  pdf: PDF
 }
 
 async function main () {
@@ -21,7 +21,7 @@ async function main () {
 
   if (process.argv.length < 4) {
     console.log(
-    `usage: ${process.argv[1]} <input png image> <output svg|eps vector>\n`)
+    `usage: ${process.argv[1]} <input png image> <output svg|pdf vector>\n`)
     process.exit(1)
   }
 

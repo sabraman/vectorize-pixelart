@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/und3f/vectorize-pixelart.git"
+    "url": "git+https://github.com/sabraman/vectorize-pixelart.git"
   },
   "bin": {
     "vectorize-pixelart": "lib/vectorize-pixelart.js"
@@ -44,8 +44,8 @@
     "convert"
   ],
   "bugs": {
-    "url": "https://github.com/und3f/vectorize-pixelart/issues"
+    "url": "https://github.com/sabraman/vectorize-pixelart/issues"
   },
-  "homepage": "https://github.com/und3f/vectorize-pixelart#readme",
+  "homepage": "https://github.com/sabraman/vectorize-pixelart#readme",
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }

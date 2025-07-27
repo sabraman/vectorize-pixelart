@@ -2,9 +2,9 @@ import { Buffer } from "buffer";
 import { PNG } from "pngjs";
 import { useState } from "react";
 import { ContourTracing } from "~/lib/vectorize/contour-tracing";
-import { EPS, PNGImageData, SVG } from "~/lib/vectorize/utils";
+import { PDF, PNGImageData, SVG } from "~/lib/vectorize/utils";
 
-type VectorFormat = "svg" | "eps";
+type VectorFormat = "svg" | "pdf";
 
 export function useVectorize() {
 	const [isProcessing, setIsProcessing] = useState(false);
@@ -39,7 +39,7 @@ export function useVectorize() {
 			const pixelMultiplier = Math.sqrt(targetSize / (png.height * png.width));
 
 			// Select formatter based on format
-			const VectorFormatterClass = format === "svg" ? SVG : EPS;
+			const VectorFormatterClass = format === "svg" ? SVG : PDF;
 			const vectorFormatter = new VectorFormatterClass(
 				png.height,
 				png.width,
