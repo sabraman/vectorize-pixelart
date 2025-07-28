@@ -12,7 +12,8 @@
 		"preview": "next build && next start",
 		"start": "next start",
 		"typecheck": "tsc --noEmit",
-		"test": "vitest"
+		"test": "vitest",
+		"generate-favicon": "node scripts/generate-favicon.js"
 	},
 	"dependencies": {
 		"@nsmr/pixelart-react": "^2.0.0",
@@ -30,6 +31,7 @@
 		"radix-ui": "^1.4.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"sharp": "^0.34.3",
 		"tailwind-merge": "^3.3.1",
 		"zod": "^3.24.2"
 	},

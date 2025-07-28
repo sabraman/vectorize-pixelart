@@ -1,0 +1,40 @@
+{
+	"name": "Vectorize Pixelart",
+	"short_name": "Vectorize",
+	"description": "Convert pixel art PNG images to clean SVG and PDF vector graphics",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#0a0a0a",
+	"theme_color": "#FF197C",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/favicon-16x16.png",
+			"sizes": "16x16",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon-32x32.png",
+			"sizes": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon-48x48.png",
+			"sizes": "48x48",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon-128x128.png",
+			"sizes": "128x128",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon-256x256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+		}
+	],
+	"categories": ["utilities", "productivity", "graphics"],
+	"lang": "en",
+	"dir": "ltr"
+} 

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Allow OG image generation
+Allow: /api/og
+
+# Sitemap
+Sitemap: https://vectorize-pixelart.vercel.app/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1 
