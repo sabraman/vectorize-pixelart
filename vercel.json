@@ -1,17 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "zeroConfig": true
-      }
-    }
-  ],
   "buildCommand": "cd web && pnpm install --frozen-lockfile && pnpm build",
   "devCommand": "cd web && pnpm dev",
   "outputDirectory": "web/.next",
+  "installCommand": "cd web && pnpm install --frozen-lockfile",
   "rewrites": [
     {
       "source": "/(.*)",
