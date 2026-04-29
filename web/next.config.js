@@ -3,17 +3,19 @@
  * for Docker builds.
  */
 import "./src/env.js";
-import { dirname, join } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const webRoot = dirname(fileURLToPath(import.meta.url));
-const workspaceRoot = join(webRoot, "..");
+const workspaceRoot = resolve(webRoot, "..");
 
 /** @type {import("next").NextConfig} */
 const config = {
-	transpilePackages: ["vectorize-pixelart"],
 	turbopack: {
 		root: workspaceRoot,
+		resolveAlias: {
+			"vectorize-pixelart": "../src/index.ts",
+		},
 	},
 };
 

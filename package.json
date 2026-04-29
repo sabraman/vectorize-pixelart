@@ -11,7 +11,9 @@
     "build": "rm -rf lib && tsc",
     "test": "vitest run",
     "lint": "ts-standard src/",
-    "format": "ts-standard --fix src/"
+    "format": "ts-standard --fix src/",
+    "verify": "bun run build && bun run test && bun run lint && cd web && bun run check && bun run typecheck && bun run test && bun run build",
+    "verify:vercel": "bun run verify && vercel build"
   },
   "directories": {
     "lib": "./lib",
