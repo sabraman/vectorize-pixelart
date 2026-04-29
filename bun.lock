@@ -42,6 +42,7 @@
         "react-dom": "^19.2.5",
         "sharp": "^0.34.5",
         "tailwind-merge": "^3.5.0",
+        "vectorize-pixelart": "file:..",
         "zod": "^4.3.6",
       },
       "devDependencies": {
@@ -1233,6 +1234,8 @@
     "use-sync-external-store": ["use-sync-external-store@1.6.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w=="],
 
     "v8-compile-cache-lib": ["v8-compile-cache-lib@3.0.1", "", {}, "sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg=="],
+
+    "vectorize-pixelart": ["vectorize-pixelart@root:", {}],
 
     "vectorize-pixelart-web": ["vectorize-pixelart-web@workspace:web"],
 

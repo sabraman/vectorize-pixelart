@@ -6,6 +6,14 @@ export type Pixel = [number, number, number, number]
 export type Coord = [number, number]
 export type Path = Coord[]
 
+function getPathPoint (contour: Path, index: number): Coord {
+  const point = contour[index]
+  if (point === undefined) {
+    throw new Error(`Invalid contour point ${index}`)
+  }
+  return point
+}
+
 abstract class Image {
   protected readonly height: number
   protected readonly width: number
@@ -48,10 +56,11 @@ export class SVG extends Image {
     const m = this.multiplier
     const rgba = pixel.join(', ')
 
-    const move = contour[0]
+    const move = getPathPoint(contour, 0)
     let path = `M ${move[1] * m} ${move[0] * m}`
     for (let i = 1; i < contour.length; i++) {
-      path += ` L${contour[i][1] * m} ${contour[i][0] * m}`
+      const point = getPathPoint(contour, i)
+      path += ` L${point[1] * m} ${point[0] * m}`
     }
     path += ' Z'
 
@@ -155,12 +164,12 @@ ${xrefOffset}
     let path = `${r} ${g} ${b} rg\n` // Set fill color
 
     // Start path
-    const move = contour[0]
+    const move = getPathPoint(contour, 0)
     path += `${(move[1]) * m} ${height - (move[0]) * m} m\n` // moveto
 
     // Add line segments
     for (let i = 1; i < contour.length; i++) {
-      const point = contour[i]
+      const point = getPathPoint(contour, i)
       path += `${(point[1]) * m} ${height - (point[0]) * m} l\n` // lineto
     }
 
@@ -199,6 +208,11 @@ export class PNGImageData {
 
   getPixel (y: number, x: number): Pixel {
     const offset = (y * this.width + x) * BYTES_PER_PIXEL
-    return [this.data[offset], this.data[offset + 1], this.data[offset + 2], this.data[offset + 3]]
+    return [
+      this.data[offset] ?? 0,
+      this.data[offset + 1] ?? 0,
+      this.data[offset + 2] ?? 0,
+      this.data[offset + 3] ?? 0
+    ]
   }
 }

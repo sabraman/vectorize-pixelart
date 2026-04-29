@@ -1,4 +1,4 @@
-import { Coord, Path, Pixel, PNGImageData } from './utils'
+import { PNGImageData, type Coord, type Path, type Pixel } from './utils'
 
 type Direction = Coord
 type ContourFoundCb = (contour: Path, pixel: Pixel) => void
@@ -21,6 +21,14 @@ function parsePointKey (key: string): Coord {
     throw new Error(`Invalid point key ${key}`)
   }
   return [y, x]
+}
+
+function getContourPoint (contour: Path, index: number): Coord {
+  const point = contour[index]
+  if (point === undefined) {
+    throw new Error(`Invalid contour point ${index}`)
+  }
+  return point
 }
 
 export class ContourTracing {
@@ -55,6 +63,10 @@ export class ContourTracing {
 
     for (let cursor = 0; cursor < queue.length; cursor++) {
       const index = queue[cursor]
+      if (index === undefined) {
+        throw new Error(`Invalid queue index ${cursor}`)
+      }
+
       const y = Math.floor(index / this.image.width)
       const x = index % this.image.width
       component.push(index)
@@ -133,9 +145,9 @@ export class ContourTracing {
     const simplified: Path = []
 
     for (let i = 0; i < contour.length; i++) {
-      const previous = contour[(i + contour.length - 1) % contour.length]
-      const current = contour[i]
-      const next = contour[(i + 1) % contour.length]
+      const previous = getContourPoint(contour, (i + contour.length - 1) % contour.length)
+      const current = getContourPoint(contour, i)
+      const next = getContourPoint(contour, (i + 1) % contour.length)
 
       if (previous[0] === current[0] && current[0] === next[0]) continue
       if (previous[1] === current[1] && current[1] === next[1]) continue
