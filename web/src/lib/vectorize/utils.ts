@@ -33,15 +33,23 @@ abstract class Image {
 }
 
 export class SVG extends Image {
+	private readonly pathsByColor = new Map<string, string[]>();
+
 	header(): string {
 		return `\
 <?xml version="1.0" encoding="UTF-8" ?>
-<svg width="${this.width * this.multiplier}" height="${this.height * this.multiplier}" xmlns="http://www.w3.org/2000/svg">
+<svg width="${this.width * this.multiplier}" height="${this.height * this.multiplier}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 `;
 	}
 
 	footer(): string {
-		return "</svg>\n";
+		let paths = "";
+
+		for (const [rgba, pathData] of this.pathsByColor) {
+			paths += `  <path d="${pathData.join(" ")}" fill-rule="evenodd" style="fill:rgba(${rgba})" />\n`;
+		}
+
+		return `${paths}</svg>\n`;
 	}
 
 	path(contour: Path, pixel: Pixel): string {
@@ -50,16 +58,20 @@ export class SVG extends Image {
 		const multiplier = this.multiplier;
 		const rgba = pixel.join(", ");
 		const move = getPathPoint(contour, 0);
-		let path = `  <path d="M ${move[1] * multiplier} ${move[0] * multiplier}`;
+		let path = `M ${move[1] * multiplier} ${move[0] * multiplier}`;
 
 		for (let i = 1; i < contour.length; i++) {
 			const point = getPathPoint(contour, i);
 			path += ` L${point[1] * multiplier} ${point[0] * multiplier}`;
 		}
 
-		path += ` Z" style="fill:rgba(${rgba})" />\n`;
+		path += " Z";
 
-		return path;
+		const paths = this.pathsByColor.get(rgba) ?? [];
+		paths.push(path);
+		this.pathsByColor.set(rgba, paths);
+
+		return "";
 	}
 }
 

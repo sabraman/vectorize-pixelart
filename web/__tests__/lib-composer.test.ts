@@ -24,8 +24,10 @@ describe("SVG Image Composer", () => {
 			],
 			[0, 0, 0, 0],
 		);
+		const footer = svg.footer();
 
-		expect(path).toMatch(/<path/);
+		expect(path).toBe("");
+		expect(footer).toMatch(/<path/);
 	});
 
 	it("should create valid SVG footer", () => {

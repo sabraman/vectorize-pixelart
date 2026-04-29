@@ -2,6 +2,7 @@ import type { Coord, Path, Pixel, PNGImageData } from "./utils";
 
 type Direction = Coord;
 type ContourFoundCb = (contour: Path, pixel: Pixel) => void;
+type EdgeMap = Map<string, Coord[]>;
 
 const DIRECTIONS: Direction[] = [
 	[1, 0],
@@ -10,29 +11,24 @@ const DIRECTIONS: Direction[] = [
 	[0, 1],
 ];
 
-const DIRECTION_VERTEX: Direction[] = [
-	[1, 0],
-	[0, 0],
-	[0, 1],
-	[1, 1],
-];
-
-const D_MOD = DIRECTIONS.length;
-
-function getDirection(direction: number): Direction {
-	const offset = DIRECTIONS[direction];
-	if (offset === undefined) {
-		throw new Error(`Invalid direction ${direction}`);
-	}
-	return offset;
+function getPointKey(point: Coord): string {
+	return `${point[0]},${point[1]}`;
 }
 
-function getDirectionVertex(direction: number): Direction {
-	const vertex = DIRECTION_VERTEX[direction];
-	if (vertex === undefined) {
-		throw new Error(`Invalid direction vertex ${direction}`);
+function parsePointKey(key: string): Coord {
+	const [y, x] = key.split(",").map(Number);
+	if (y === undefined || x === undefined) {
+		throw new Error(`Invalid point key ${key}`);
 	}
-	return vertex;
+	return [y, x];
+}
+
+function getContourPoint(contour: Path, index: number): Coord {
+	const point = contour[index];
+	if (point === undefined) {
+		throw new Error(`Invalid contour point ${index}`);
+	}
+	return point;
 }
 
 export class ContourTracing {
@@ -50,138 +46,148 @@ export class ContourTracing {
 		return alpha > 0;
 	}
 
-	findNeighborbood(y: number, x: number): number | undefined {
-		for (let direction = 0; direction < DIRECTIONS.length; direction++) {
-			const directionOffset = getDirection(direction);
-			const y1 = y + directionOffset[0];
-			const x1 = x + directionOffset[1];
+	private getIndex(y: number, x: number): number {
+		return y * this.image.width + x;
+	}
 
-			if (
-				this.image.comparePixels(y, x, y1, x1) &&
-				!this.visitedPixels[y1 * this.image.width + x1]
-			) {
-				return direction;
+	private isInsideImage(y: number, x: number): boolean {
+		return y >= 0 && y < this.image.height && x >= 0 && x < this.image.width;
+	}
+
+	private floodFillComponent(y0: number, x0: number): number[] {
+		const component: number[] = [];
+		const queue: number[] = [this.getIndex(y0, x0)];
+		this.visitedPixels[this.getIndex(y0, x0)] = true;
+
+		for (let cursor = 0; cursor < queue.length; cursor++) {
+			const index = queue[cursor];
+			if (index === undefined) {
+				throw new Error(`Invalid queue index ${cursor}`);
+			}
+
+			const y = Math.floor(index / this.image.width);
+			const x = index % this.image.width;
+			component.push(index);
+
+			for (const [dy, dx] of DIRECTIONS) {
+				const y1 = y + dy;
+				const x1 = x + dx;
+
+				if (!this.isInsideImage(y1, x1)) continue;
+
+				const nextIndex = this.getIndex(y1, x1);
+				if (this.visitedPixels[nextIndex]) continue;
+				if (!this.image.comparePixels(y0, x0, y1, x1)) continue;
+
+				this.visitedPixels[nextIndex] = true;
+				queue.push(nextIndex);
 			}
 		}
+
+		return component;
 	}
 
-	addMoveVertexes(
-		contour: Path,
+	private addBoundaryEdge(edges: EdgeMap, start: Coord, end: Coord): void {
+		const key = getPointKey(start);
+		const ends = edges.get(key) ?? [];
+		ends.push(end);
+		edges.set(key, ends);
+	}
+
+	private takeBoundaryEdge(edges: EdgeMap, start: Coord): Coord | undefined {
+		const key = getPointKey(start);
+		const ends = edges.get(key);
+		if (ends === undefined) return;
+
+		const end = ends.shift();
+		if (ends.length === 0) edges.delete(key);
+
+		return end;
+	}
+
+	private hasComponentPixel(
+		componentPixels: Set<number>,
 		y: number,
 		x: number,
-		directionMove: number,
-		directionPrevious: number,
-	): void {
-		for (
-			let direction = directionPrevious;
-			direction !== directionMove;
-			direction = (direction + 1) % D_MOD
-		) {
-			const vertex = getDirectionVertex(direction);
-			contour.push([y + vertex[0], x + vertex[1]]);
-		}
-
-		if (directionMove === directionPrevious) contour.pop();
-
-		const vertex = getDirectionVertex(directionMove);
-		contour.push([y + vertex[0], x + vertex[1]]);
+	): boolean {
+		return this.isInsideImage(y, x) && componentPixels.has(this.getIndex(y, x));
 	}
 
-	addRotationVertexes(
-		contour: Path,
-		y: number,
-		x: number,
-		currentDirection: number,
-		targetDirection: number,
-	): void {
-		for (
-			let direction = currentDirection;
-			direction !== targetDirection;
-			direction = (direction + 1) % D_MOD
-		) {
-			const vertex = getDirectionVertex(direction);
-			contour.push([y + vertex[0], x + vertex[1]]);
-		}
-	}
+	private buildBoundaryEdges(component: number[]): EdgeMap {
+		const componentPixels = new Set(component);
+		const edges: EdgeMap = new Map();
 
-	addContour(
-		contour: Path,
-		y: number,
-		x: number,
-		startDirection: number,
-		endDirection: number,
-	): void {
-		if (startDirection === endDirection) return;
+		for (const index of component) {
+			const y = Math.floor(index / this.image.width);
+			const x = index % this.image.width;
 
-		for (
-			let direction = (startDirection + D_MOD - 1) % D_MOD, firstRun = true;
-			firstRun || direction !== endDirection;
-			direction = (direction + 1) % D_MOD, firstRun = false
-		) {
-			const vertex = getDirectionVertex(direction);
-			contour.push([y + vertex[0], x + vertex[1]]);
-		}
-	}
-
-	traceContour(y0: number, x0: number): Path {
-		const image = this.image;
-		const width = this.image.width;
-		const height = this.image.height;
-		const contour: Path = [];
-		const neighborhoodDirection = this.findNeighborbood(y0, x0);
-
-		if (neighborhoodDirection === undefined) {
-			this.visitedPixels[y0 * width + x0] = true;
-			this.addMoveVertexes(contour, y0, x0, D_MOD - 1, 0);
-			return contour;
-		}
-
-		this.addContour(contour, y0, x0, 0, neighborhoodDirection);
-
-		let lastDirection = neighborhoodDirection;
-		const neighborhoodOffset = getDirection(neighborhoodDirection);
-		let ylast = y0 + neighborhoodOffset[0];
-		let xlast = x0 + neighborhoodOffset[1];
-
-		const trace = [y0 * width + x0, ylast * width + xlast];
-
-		do {
-			const oppositeDirection = (lastDirection + D_MOD / 2) % D_MOD;
-			const startDirection = (oppositeDirection + 1) % D_MOD;
-
-			for (
-				let newDirection = startDirection;
-				;
-				newDirection = (newDirection + 1) % D_MOD
-			) {
-				const directionOffset = getDirection(newDirection);
-				const y = ylast + directionOffset[0];
-				const x = xlast + directionOffset[1];
-
-				if (y < 0 || y >= height || x < 0 || x >= width) continue;
-
-				if (
-					image.comparePixels(ylast, xlast, y, x) &&
-					!this.visitedPixels[y * width + x]
-				) {
-					trace.push(y * width + x);
-
-					this.addContour(contour, ylast, xlast, lastDirection, newDirection);
-					ylast = y;
-					xlast = x;
-					lastDirection = newDirection;
-					break;
-				}
+			if (!this.hasComponentPixel(componentPixels, y - 1, x)) {
+				this.addBoundaryEdge(edges, [y, x], [y, x + 1]);
 			}
-		} while (!(ylast === y0 && xlast === x0));
 
-		this.addContour(contour, y0, x0, lastDirection, neighborhoodDirection);
+			if (!this.hasComponentPixel(componentPixels, y, x + 1)) {
+				this.addBoundaryEdge(edges, [y, x + 1], [y + 1, x + 1]);
+			}
 
-		for (const pos of trace) {
-			this.visitedPixels[pos] = true;
+			if (!this.hasComponentPixel(componentPixels, y + 1, x)) {
+				this.addBoundaryEdge(edges, [y + 1, x + 1], [y + 1, x]);
+			}
+
+			if (!this.hasComponentPixel(componentPixels, y, x - 1)) {
+				this.addBoundaryEdge(edges, [y + 1, x], [y, x]);
+			}
 		}
 
-		return contour;
+		return edges;
+	}
+
+	private simplifyContour(contour: Path): Path {
+		if (contour.length <= 2) return contour;
+
+		const simplified: Path = [];
+
+		for (let i = 0; i < contour.length; i++) {
+			const previous = getContourPoint(
+				contour,
+				(i + contour.length - 1) % contour.length,
+			);
+			const current = getContourPoint(contour, i);
+			const next = getContourPoint(contour, (i + 1) % contour.length);
+
+			if (previous[0] === current[0] && current[0] === next[0]) continue;
+			if (previous[1] === current[1] && current[1] === next[1]) continue;
+
+			simplified.push(current);
+		}
+
+		return simplified;
+	}
+
+	private traceBoundaryContours(component: number[]): Path[] {
+		const edges = this.buildBoundaryEdges(component);
+		const contours: Path[] = [];
+
+		while (edges.size > 0) {
+			const startKey = edges.keys().next().value;
+			if (startKey === undefined) break;
+
+			const start = parsePointKey(startKey);
+			const contour: Path = [start];
+			let current = start;
+
+			for (;;) {
+				const next = this.takeBoundaryEdge(edges, current);
+				if (next === undefined) break;
+				if (next[0] === start[0] && next[1] === start[1]) break;
+
+				contour.push(next);
+				current = next;
+			}
+
+			contours.push(this.simplifyContour(contour));
+		}
+
+		return contours;
 	}
 
 	traceContours(cb: ContourFoundCb): void {
@@ -197,8 +203,10 @@ export class ContourTracing {
 				continue;
 			}
 
-			const contour = this.traceContour(y0, x0);
-			if (contour !== undefined) cb(contour, pixel);
+			const component = this.floodFillComponent(y0, x0);
+			for (const contour of this.traceBoundaryContours(component)) {
+				cb(contour, pixel);
+			}
 		}
 	}
 }

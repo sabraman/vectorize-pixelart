@@ -21,9 +21,11 @@ describe("SVG Image Composer", () => {
 			],
 			[255, 0, 0, 255],
 		);
+		const footer = svg.footer();
 
-		expect(path).toContain('<path d="M 10 10');
-		expect(path).toContain('style="fill:rgba(255, 0, 0, 255)"');
+		expect(path).toBe("");
+		expect(footer).toContain('<path d="M 10 10');
+		expect(footer).toContain('style="fill:rgba(255, 0, 0, 255)"');
 	});
 
 	it("should return empty string for empty contour", () => {
@@ -38,6 +40,46 @@ describe("SVG Image Composer", () => {
 		const footer = svg.footer();
 
 		expect(footer).toBe("</svg>\n");
+	});
+
+	it("should group same-color contours into one compound path", () => {
+		const svg = new SVG(2, 2);
+
+		svg.path(
+			[
+				[0, 0],
+				[0, 1],
+				[1, 1],
+				[1, 0],
+			],
+			[255, 0, 0, 255],
+		);
+		svg.path(
+			[
+				[1, 1],
+				[1, 2],
+				[2, 2],
+				[2, 1],
+			],
+			[255, 0, 0, 255],
+		);
+		svg.path(
+			[
+				[0, 1],
+				[0, 2],
+				[1, 2],
+				[1, 1],
+			],
+			[0, 0, 255, 255],
+		);
+
+		const footer = svg.footer();
+		const paths = footer.match(/<path/g) ?? [];
+
+		expect(paths).toHaveLength(2);
+		expect(footer).toContain("fill:rgba(255, 0, 0, 255)");
+		expect(footer).toContain("fill:rgba(0, 0, 255, 255)");
+		expect(footer).toContain('fill-rule="evenodd"');
 	});
 });
 

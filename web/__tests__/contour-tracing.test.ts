@@ -44,8 +44,9 @@ class MockedImage implements ImageLike {
 
 	getPixel(y: number, x: number): Pixel {
 		const offset = this.getOffset(y, x);
-		const gray = 255 * (this.image[offset] ?? 0);
-		return [gray, gray, gray, 255];
+		const value = this.image[offset] ?? 0;
+		const gray = 255 * value;
+		return [gray, gray, gray, value === 0 ? 0 : 255];
 	}
 }
 
@@ -136,16 +137,29 @@ describe("ContourTracing", () => {
 			contourCoords.push(contour);
 		});
 
-		// Updated: we now filter out transparent/background pixels
-		// so we get fewer contours (only the significant ones)
-		expect(contourCoords.length).toBe(2);
+		expect(contourCoords).toHaveLength(1);
 
-		// The actual implementation produces a contour with 16 points
 		if (contourCoords[0]) {
-			expect(contourCoords[0].length).toBe(16);
-
-			// The contour is still straight
+			expect(contourCoords[0]).toHaveLength(4);
 			expect(isStraightContour(contourCoords[0])).toBe(true);
 		}
+	});
+
+	it("should trace outer and inner boundaries for a shape with a hole", () => {
+		const imageData = [1, 1, 1, 1, 0, 1, 1, 1, 1];
+
+		const image = new MockedImage(imageData, 3, 3);
+		const tracer = new ContourTracing(
+			image as unknown as import("../src/lib/vectorize/utils").PNGImageData,
+		);
+		const contours: Path[] = [];
+
+		tracer.traceContours((contour: Path) => {
+			contours.push(contour);
+			expect(isStraightContour(contour)).toBe(true);
+		});
+
+		expect(contours).toHaveLength(2);
+		expect(contours.map((contour) => contour.length).sort()).toEqual([4, 4]);
 	});
 });
