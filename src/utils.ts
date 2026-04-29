@@ -55,7 +55,7 @@ export class PDF extends Image {
   header (): string {
     const width = this.width * this.multiplier
     const height = this.height * this.multiplier
-    
+
     return `%PDF-1.4
 1 0 obj
 <<
@@ -88,7 +88,7 @@ endobj
 
   footer (): string {
     const contentLength = Buffer.byteLength(this.contentStream, 'utf8')
-    
+
     // Write content object with correct length
     const contentObj = `4 0 obj
 <<
@@ -99,12 +99,12 @@ ${this.contentStream}endstream
 endobj
 
 `
-    
+
     // Calculate xref offset
     const headerLength = Buffer.byteLength(this.header(), 'utf8')
     const contentObjLength = Buffer.byteLength(contentObj, 'utf8')
     const xrefOffset = headerLength + contentObjLength
-    
+
     return contentObj + `xref
 0 5
 0000000000 65535 f 
@@ -123,35 +123,35 @@ ${xrefOffset}
 `
   }
 
-  private padOffset(offset: number): string {
+  private padOffset (offset: number): string {
     return offset.toString().padStart(10, '0')
   }
 
   path (contour: Path, pixel: Pixel): string {
     if (contour.length === 0) return ''
-    
+
     const m = this.multiplier
     const height = this.height * m
-    
+
     // Convert RGB values to PDF color format (0-1 range)
     const r = (pixel[0] / 255).toFixed(3)
     const g = (pixel[1] / 255).toFixed(3)
     const b = (pixel[2] / 255).toFixed(3)
-    
+
     let path = `${r} ${g} ${b} rg\n` // Set fill color
-    
+
     // Start path
     const move = contour[0]
     path += `${(move[1]) * m} ${height - (move[0]) * m} m\n` // moveto
-    
+
     // Add line segments
     for (let i = 1; i < contour.length; i++) {
       const point = contour[i]
       path += `${(point[1]) * m} ${height - (point[0]) * m} l\n` // lineto
     }
-    
+
     path += 'f\n' // fill
-    
+
     this.contentStream += path
     return ''
   }

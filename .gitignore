@@ -64,5 +64,7 @@ typings/
 out.*
 
 lib/
+!web/src/lib/
+!web/src/lib/**
 /*.png
 .vercel

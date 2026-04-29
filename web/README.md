@@ -1,247 +1,110 @@
-# Vectorize Pixelart - Web Interface
+# Vectorize Pixelart Web
 
-A modern web application for converting pixel art PNG images to clean SVG and PDF vector graphics. Built with Next.js, TypeScript, and Tailwind CSS.
+Next.js web interface for converting pixel art PNG files to SVG or PDF. Conversion runs in the browser.
 
-## ✨ Features
+## Requirements
 
-- **Drag & Drop Interface**: Easy file upload with drag-and-drop support
-- **Multiple Output Formats**: Convert to SVG (web-ready) or PDF (print-ready)
-- **100% Local Processing**: No files uploaded to servers - everything happens in your browser
-- **Real-time Preview**: See your vectorized image before downloading
-- **Mobile Responsive**: Works perfectly on all devices
-- **PWA Support**: Install as a web app on mobile devices
-- **SEO Optimized**: Complete meta tags, Open Graph, and social media optimization
+- Node.js 18+
+- Bun 1.3+
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+ 
-- pnpm (recommended) or npm
-
-### Installation
+## Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/vectorize-pixelart.git
+git clone https://github.com/sabraman/vectorize-pixelart.git
 cd vectorize-pixelart/web
-
-# Install dependencies
-pnpm install
-
-# Generate favicons (optional)
-pnpm generate-favicon
-
-# Start development server
-pnpm dev
+bun install
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
-
-## 🛠️ Development
+## Development
 
 ```bash
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Start production server
-pnpm start
-
-# Preview production build
-pnpm preview
-
-# Run tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test --watch
-
-# Run tests with coverage
-pnpm test --coverage
-
-# Type checking
-pnpm typecheck
-
-# Linting and formatting
-pnpm check
-pnpm check:write
+bun run dev
 ```
 
-## 📁 Project Structure
+The local app runs at `http://localhost:3000`.
 
+## Commands
+
+```bash
+bun run check
+bun run check:write
+bun run typecheck
+bun run test --run
+bun run generate-favicon
 ```
+
+The production scripts are available as:
+
+```bash
+bun run build
+bun run start
+bun run preview
+```
+
+## Features
+
+- PNG file upload
+- SVG export
+- PDF export
+- PNG upscaling
+- Local browser processing
+- Dynamic Open Graph image route
+- PWA manifest and favicon assets
+
+## Project Structure
+
+```text
 web/
+├── __tests__/              # Vitest tests
 ├── public/                 # Static assets
-│   ├── favicon.ico        # Generated favicon
-│   ├── favicon-*.png      # Various favicon sizes
-│   ├── favicon.svg        # Original SVG favicon
-│   ├── robots.txt         # SEO robots file
-│   ├── sitemap.xml        # SEO sitemap
-│   └── site.webmanifest   # PWA manifest
-├── src/
-│   ├── app/               # Next.js App Router
-│   │   ├── api/           # API routes
-│   │   │   └── og/        # Open Graph image generation
-│   │   ├── layout.tsx     # Root layout with SEO metadata
-│   │   └── page.tsx       # Home page
-│   ├── components/         # React components
-│   ├── hooks/             # Custom React hooks
-│   ├── lib/               # Utility libraries
-│   └── styles/            # Global styles
-├── scripts/
-│   └── generate-favicon.js # Favicon generation script
-└── __tests__/             # Test files
+├── scripts/                # Utility scripts
+└── src/
+    ├── app/                # Next.js App Router
+    ├── components/         # React components
+    ├── hooks/              # React hooks
+    ├── lib/                # Shared utilities
+    ├── styles/             # Global styles
+    └── test/               # Test setup
 ```
 
-## 🎨 SEO & Social Media Features
+## Configuration
 
-### Open Graph Images
-- Dynamic OG image generation at `/api/og`
-- Optimized for social media sharing (1200x630px)
-- Branded design with your app's colors and logo
-
-### Meta Tags
-- Comprehensive SEO metadata
-- Twitter Card support
-- PWA manifest for mobile installation
-- Structured data for better search visibility
-
-### Favicons
-- Multiple sizes: 16x16, 32x32, 48x48, 128x128, 256x256
-- ICO format for maximum compatibility
-- SVG version for modern browsers
-- Apple touch icons for iOS devices
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. **Connect your repository to Vercel**
-   ```bash
-   # Install Vercel CLI
-   pnpm dlx vercel@latest
-
-   # Deploy to Vercel
-   pnpm dlx vercel@latest --prod
-   ```
-
-2. **Environment Variables** (if needed)
-   - No environment variables required for basic functionality
-   - Add Google Analytics or other tracking codes as needed
-
-3. **Custom Domain** (optional)
-   - Configure in Vercel dashboard
-   - Update `robots.txt` and `sitemap.xml` with your domain
-
-### Other Platforms
-
-The app can be deployed to any platform that supports Next.js:
-
-- **Netlify**: Use `next build && next export`
-- **Railway**: Direct deployment from GitHub
-- **DigitalOcean App Platform**: Container deployment
-- **AWS Amplify**: Full-stack deployment
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env.local` file for local development:
+Use `.env.local` for local environment values.
 
 ```env
-# Optional: Google Analytics
 NEXT_PUBLIC_GA_ID=your-ga-id
-
-# Optional: Custom domain for OG images
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
-### SEO Customization
+Both variables are optional for the default app.
 
-Update `src/app/layout.tsx` to customize:
+## Deployment
 
-- Site title and description
-- Open Graph images
-- Twitter Card settings
-- Favicon paths
-- Google Search Console verification
-
-### Favicon Generation
-
-To regenerate favicons from your SVG:
+Deploy with the Vercel CLI:
 
 ```bash
-pnpm generate-favicon
+bunx vercel@latest
+bunx vercel@latest --prod
 ```
 
-This creates:
-- `favicon.ico` (ICO format)
-- `favicon-16x16.png` through `favicon-256x256.png`
-- Updates `site.webmanifest` with new icons
+For other platforms, use the standard Next.js production flow for the target host.
 
-## 🧪 Testing
+## Favicons
+
+Regenerate favicon assets from `public/favicon.svg`:
 
 ```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test --watch
-
-# Run tests with coverage
-pnpm test --coverage
-
-# Run specific test file
-pnpm test drop-area.test.tsx
+bun run generate-favicon
 ```
 
-## 📊 Performance
+## Testing
 
-- **Lighthouse Score**: 95+ across all metrics
-- **Core Web Vitals**: Optimized for all metrics
-- **Bundle Size**: <200KB gzipped
-- **First Contentful Paint**: <1.5s
-- **Largest Contentful Paint**: <2.5s
+```bash
+bun run test --run
+bun run test --coverage
+bun run test drop-area.test.tsx
+```
 
-## 🔍 SEO Checklist
+## License
 
-- ✅ Meta tags optimized
-- ✅ Open Graph images
-- ✅ Twitter Cards
-- ✅ Structured data
-- ✅ Sitemap.xml
-- ✅ Robots.txt
-- ✅ Favicons (multiple sizes)
-- ✅ PWA manifest
-- ✅ Mobile responsive
-- ✅ Fast loading times
-- ✅ Accessible design
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Next.js](https://nextjs.org/)
-- Styled with [Tailwind CSS](https://tailwindcss.com/)
-- Icons from [@nsmr/pixelart-react](https://www.npmjs.com/package/@nsmr/pixelart-react)
-- UI components from [Radix UI](https://www.radix-ui.com/)
-- Testing with [Vitest](https://vitest.dev/)
-
----
-
-**Live Demo**: [https://vectorize-pixelart.vercel.app](https://vectorize-pixelart.vercel.app)
-
-**NPM Package**: [vectorize-pixelart](https://www.npmjs.com/package/vectorize-pixelart)
+This project uses the repository license. See [../LICENSE](../LICENSE).

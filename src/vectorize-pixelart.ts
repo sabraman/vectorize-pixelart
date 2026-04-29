@@ -14,7 +14,7 @@ const OutputFileFormats: { [key: string]: any } = {
   pdf: PDF
 }
 
-async function main () {
+async function main (): Promise<void> {
   const targetSize = 2 ** 23
   const inputFileName = process.argv[2]
   const outputFileName: string = process.argv[3]

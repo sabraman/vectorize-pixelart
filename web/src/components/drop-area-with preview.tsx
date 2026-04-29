@@ -5,19 +5,16 @@ import {
 	Close,
 	Download,
 	File,
-	Image,
+	Image as ImageIcon,
 	Loader,
 	Minus,
 	Plus,
-	Upload,
 	WarningBox,
 } from "@nsmr/pixelart-react";
-import { useEffect, useRef, useState } from "react";
+import NextImage from "next/image";
 import type { ChangeEvent } from "react";
-
-import { Alert, AlertDescription } from "~/components/ui/alert";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Progress } from "~/components/ui/progress";
 import { useFileUpload } from "~/hooks/use-file-upload";
 import { useVectorize } from "~/hooks/use-vectorize";
 import { downloadString } from "~/lib/download";
@@ -205,8 +202,7 @@ export default function DropAreaWithPreview() {
 				}
 
 				const outputFilename = `${files[0].file.name.split(".")[0]}.${format}`;
-				const mimeType =
-					format === "svg" ? "image/svg+xml" : "application/pdf";
+				const mimeType = format === "svg" ? "image/svg+xml" : "application/pdf";
 
 				downloadString(result, outputFilename, mimeType);
 			} else {
@@ -278,7 +274,7 @@ export default function DropAreaWithPreview() {
 			try {
 				canvas.width = targetWidth;
 				canvas.height = targetHeight;
-			} catch (e) {
+			} catch (_e) {
 				throw new Error(
 					`Browser cannot allocate canvas of size ${targetWidth}x${targetHeight}. Try a smaller upscale factor.`,
 				);
@@ -293,7 +289,7 @@ export default function DropAreaWithPreview() {
 
 			try {
 				ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-			} catch (e) {
+			} catch (_e) {
 				throw new Error(
 					`Failed to render image at size ${targetWidth}x${targetHeight}. Try a smaller upscale factor.`,
 				);
@@ -306,7 +302,7 @@ export default function DropAreaWithPreview() {
 						if (blob) resolve(blob);
 						else reject(new Error("Failed to create blob"));
 					}, "image/png");
-				} catch (e) {
+				} catch (_e) {
 					reject(
 						new Error(
 							"Failed to convert canvas to PNG. The image might be too large.",
@@ -406,13 +402,13 @@ export default function DropAreaWithPreview() {
 		<div className="w-full space-y-3">
 			{/* Main drop area */}
 			<div className="relative w-full">
+				{/* biome-ignore lint/a11y/useSemanticElements: Cannot use button element due to nested button controls. */}
 				<div
 					onDragEnter={handleDragEnter}
 					onDragLeave={handleDragLeave}
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
 					onClick={openFileDialog}
-					// biome-ignore lint/a11y/useSemanticElements: Cannot use button element due to nested button (remove button)
 					role="button"
 					tabIndex={0}
 					onKeyDown={(e) => {
@@ -433,11 +429,14 @@ export default function DropAreaWithPreview() {
 					{previewUrl ? (
 						// Preview mode
 						<div className="relative">
-							<div className="flex aspect-square max-h-full w-full items-center justify-center p-2">
-								<img
+							<div className="relative flex aspect-square max-h-full w-full items-center justify-center p-2">
+								<NextImage
 									src={previewUrl}
 									alt={fileName || "Preview"}
-									className="pixel-art-image max-h-full max-w-full border border-accent/20 object-contain"
+									fill
+									unoptimized
+									sizes="(max-width: 768px) 100vw, 448px"
+									className="pixel-art-image border border-accent/20 object-contain"
 									style={{ imageRendering: "pixelated" }}
 								/>
 							</div>
@@ -490,7 +489,7 @@ export default function DropAreaWithPreview() {
 							</div>
 
 							<div className="relative z-10 mb-4 flex h-10 w-10 items-center justify-center border border-accent/40 bg-accent/20 transition-all duration-200 group-hover:scale-110 group-hover:animate-pixelPulse group-hover:bg-accent/40">
-								<Image
+								<ImageIcon
 									size={20}
 									className="text-accent transition-colors group-hover:text-accent-foreground"
 								/>
