@@ -116,8 +116,8 @@ bun run build
 ### Web App
 
 ```bash
-cd web
 bun install
+cd web
 bun run dev
 ```
 

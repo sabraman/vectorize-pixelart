@@ -4,6 +4,9 @@
   "description": "Convert raster pixel art graphics to vector",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "workspaces": [
+    "web"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
@@ -25,6 +28,7 @@
     "@types/node": "^25.6.0",
     "@types/pngjs": "^6.0.5",
     "eslint": "^10.2.1",
+    "next": "^16.2.4",
     "standard": "^17.1.2",
     "ts-node": "^10.9.2",
     "ts-standard": "^12.0.2",

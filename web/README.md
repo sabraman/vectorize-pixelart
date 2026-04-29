@@ -11,8 +11,9 @@ Next.js web interface for converting pixel art PNG files to SVG or PDF. Conversi
 
 ```bash
 git clone https://github.com/sabraman/vectorize-pixelart.git
-cd vectorize-pixelart/web
+cd vectorize-pixelart
 bun install
+cd web
 ```
 
 ## Development

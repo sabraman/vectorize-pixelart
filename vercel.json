@@ -1,9 +1,10 @@
 {
   "version": 2,
+  "framework": "nextjs",
   "buildCommand": "cd web && bun run build",
   "devCommand": "cd web && bun run dev",
   "outputDirectory": "web/.next",
-  "installCommand": "cd web && bun install --frozen-lockfile",
+  "installCommand": "bun install --frozen-lockfile",
   "rewrites": [
     {
       "source": "/(.*)",
