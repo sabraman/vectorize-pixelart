@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { ContourTracing } from "../src/lib/vectorize/contour-tracing";
-import type { Coord, Path, Pixel } from "../src/lib/vectorize/utils";
+import { ContourTracing } from "../../src/contour-tracing";
+import type { Coord, Path, Pixel } from "../../src/utils";
 
 interface ImageLike {
 	readonly width: number;
@@ -84,7 +84,7 @@ describe("ContourTracing", () => {
 
 		const image = new MockedImage(imageData, 5, 5);
 		const tracer = new ContourTracing(
-			image as unknown as import("../src/lib/vectorize/utils").PNGImageData,
+			image as unknown as import("../../src/utils").PNGImageData,
 		);
 
 		let foundContours = 0;
@@ -107,7 +107,7 @@ describe("ContourTracing", () => {
 
 		const image = new MockedImage(imageData, 3, 3);
 		const tracer = new ContourTracing(
-			image as unknown as import("../src/lib/vectorize/utils").PNGImageData,
+			image as unknown as import("../../src/utils").PNGImageData,
 		);
 
 		let foundContours = 0;
@@ -128,7 +128,7 @@ describe("ContourTracing", () => {
 
 		const image = new MockedImage(imageData, 4, 4);
 		const tracer = new ContourTracing(
-			image as unknown as import("../src/lib/vectorize/utils").PNGImageData,
+			image as unknown as import("../../src/utils").PNGImageData,
 		);
 
 		const contourCoords: Path[] = [];
@@ -150,7 +150,7 @@ describe("ContourTracing", () => {
 
 		const image = new MockedImage(imageData, 3, 3);
 		const tracer = new ContourTracing(
-			image as unknown as import("../src/lib/vectorize/utils").PNGImageData,
+			image as unknown as import("../../src/utils").PNGImageData,
 		);
 		const contours: Path[] = [];
 

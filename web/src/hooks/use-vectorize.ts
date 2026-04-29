@@ -1,10 +1,7 @@
 import { Buffer } from "buffer";
 import { PNG } from "pngjs";
 import { useState } from "react";
-import { ContourTracing } from "~/lib/vectorize/contour-tracing";
-import { PDF, PNGImageData, SVG } from "~/lib/vectorize/utils";
-
-type VectorFormat = "svg" | "pdf";
+import { type VectorFormat, vectorizePng } from "vectorize-pixelart";
 
 export function useVectorize() {
 	const [isProcessing, setIsProcessing] = useState(false);
@@ -31,32 +28,7 @@ export function useVectorize() {
 				});
 			});
 
-			// Create image data
-			const image = new PNGImageData(png);
-
-			// Setup for vectorization
-			const targetSize = 2 ** 23;
-			const pixelMultiplier = Math.sqrt(targetSize / (png.height * png.width));
-
-			// Select formatter based on format
-			const VectorFormatterClass = format === "svg" ? SVG : PDF;
-			const vectorFormatter = new VectorFormatterClass(
-				png.height,
-				png.width,
-				pixelMultiplier,
-			);
-
-			// Perform the vectorization
-			let result = vectorFormatter.header();
-
-			const tracer = new ContourTracing(image);
-			tracer.traceContours((contour, pixel) => {
-				result += vectorFormatter.path(contour, pixel);
-			});
-
-			result += vectorFormatter.footer();
-
-			return result;
+			return vectorizePng(png, format);
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error ? err.message : "Unknown error occurred";

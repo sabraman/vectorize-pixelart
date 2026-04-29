@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PDF, SVG } from "../src/lib/vectorize/utils";
+import { PDF, SVG } from "../../src/utils";
 
 describe("SVG Image Composer", () => {
 	it("should create valid SVG header", () => {
