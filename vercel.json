@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "cd web && pnpm install --frozen-lockfile && pnpm build",
-  "devCommand": "cd web && pnpm dev",
+  "framework": "nextjs",
+  "buildCommand": "cd web && bun run build",
+  "devCommand": "cd web && bun run dev",
   "outputDirectory": "web/.next",
-  "installCommand": "cd web && pnpm install --frozen-lockfile",
+  "installCommand": "bun install --frozen-lockfile",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -14,4 +15,3 @@
     "NEXT_PUBLIC_APP_NAME": "Vectorize Pixelart"
   }
 }
-

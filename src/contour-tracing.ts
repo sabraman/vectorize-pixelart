@@ -29,10 +29,10 @@ export class ContourTracing {
     this.visitedPixels.fill(false)
   }
 
-  private isSignificantPixel(pixel: Pixel): boolean {
+  private isSignificantPixel (pixel: Pixel): boolean {
     // Check if pixel is not transparent (alpha > 0)
     // Include all non-transparent pixels, including black (RGB = 0,0,0)
-    const [r, g, b, a] = pixel
+    const [, , , a] = pixel
     return a > 0
   }
 
@@ -139,13 +139,13 @@ export class ContourTracing {
       const y0 = Math.floor(i / this.image.width)
       const x0 = i % this.image.width
       const pixel = this.image.getPixel(y0, x0)
-      
+
       // Skip transparent/background pixels
       if (!this.isSignificantPixel(pixel)) {
         this.visitedPixels[i] = true
         continue
       }
-      
+
       const contour = this.traceContour(y0, x0)
       if (contour !== undefined) { cb(contour, pixel) }
     }

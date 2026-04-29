@@ -1,5 +1,5 @@
-import { type VariantProps, cva } from "class-variance-authority";
-import { Slot } from "radix-ui";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
 import { cn } from "~/lib/utils";
@@ -10,16 +10,16 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				default:
-					"hover:-translate-y-0.5 border border-accent-foreground/20 bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 active:translate-y-0",
+					"border border-accent-foreground/20 bg-accent text-accent-foreground shadow-sm hover:-translate-y-0.5 hover:bg-accent/90 active:translate-y-0",
 				destructive:
-					"hover:-translate-y-0.5 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 active:translate-y-0",
+					"bg-destructive text-destructive-foreground shadow-sm hover:-translate-y-0.5 hover:bg-destructive/90 active:translate-y-0",
 				outline:
-					"hover:-translate-y-0.5 border border-accent/60 bg-background text-accent hover:bg-accent/10 hover:text-accent-foreground active:translate-y-0",
+					"border border-accent/60 bg-background text-accent hover:-translate-y-0.5 hover:bg-accent/10 hover:text-accent-foreground active:translate-y-0",
 				secondary:
-					"hover:-translate-y-0.5 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 active:translate-y-0",
+					"bg-secondary text-secondary-foreground shadow-sm hover:-translate-y-0.5 hover:bg-secondary/80 active:translate-y-0",
 				ghost:
 					"hover:-translate-y-0.5 hover:bg-accent/10 hover:text-accent-foreground active:translate-y-0",
-				link: "hover:-translate-y-0.5 text-accent underline-offset-2 hover:underline active:translate-y-0",
+				link: "text-accent underline-offset-2 hover:-translate-y-0.5 hover:underline active:translate-y-0",
 			},
 			size: {
 				default: "h-7 px-3 py-1 text-xs",
@@ -45,7 +45,7 @@ function Button({
 	VariantProps<typeof buttonVariants> & {
 		asChild?: boolean;
 	}) {
-	const Comp = asChild ? Slot.Root : "button";
+	const Comp = asChild ? Slot : "button";
 
 	return (
 		<Comp

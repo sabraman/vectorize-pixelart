@@ -4,8 +4,10 @@ import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 
 export const metadata: Metadata = {
+	metadataBase: new URL("https://vectorize-pixelart.vercel.app"),
 	title: "Vectorize Pixelart - Convert Pixel Art to Vector Graphics",
-	description: "Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers. 100% local processing, no uploads required.",
+	description:
+		"Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers. 100% local processing, no uploads required.",
 	keywords: [
 		"pixel art",
 		"vector graphics",
@@ -38,7 +40,8 @@ export const metadata: Metadata = {
 		locale: "en_US",
 		url: "https://vectorize-pixelart.vercel.app",
 		title: "Vectorize Pixelart - Convert Pixel Art to Vector Graphics",
-		description: "Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers.",
+		description:
+			"Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers.",
 		siteName: "Vectorize Pixelart",
 		images: [
 			{
@@ -52,7 +55,8 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: "Vectorize Pixelart - Convert Pixel Art to Vector Graphics",
-		description: "Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers.",
+		description:
+			"Free online tool to convert pixel art PNG images to clean SVG and PDF vector graphics. Perfect for game developers, artists, and designers.",
 		images: ["/api/og"],
 		creator: "@vectorize_pixelart",
 	},
@@ -66,9 +70,7 @@ export const metadata: Metadata = {
 		apple: [
 			{ url: "/favicon-180x180.png", sizes: "180x180", type: "image/png" },
 		],
-		other: [
-			{ url: "/favicon.svg", type: "image/svg+xml" },
-		],
+		other: [{ url: "/favicon.svg", type: "image/svg+xml" }],
 	},
 	manifest: "/site.webmanifest",
 	other: {
@@ -96,7 +98,11 @@ export default function RootLayout({
 		<html lang="en" className={`${pixelFont.variable} dark`}>
 			<head>
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
-				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+				<link
+					rel="preconnect"
+					href="https://fonts.gstatic.com"
+					crossOrigin="anonymous"
+				/>
 			</head>
 			<body className="min-h-screen bg-background text-foreground antialiased">
 				{children}
