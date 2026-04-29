@@ -23,29 +23,43 @@ abstract class Image {
 }
 
 export class SVG extends Image {
+  private readonly pathsByColor = new Map<string, string[]>()
+
   header (): string {
     return `\
 <?xml version="1.0" encoding="UTF-8" ?>
-<svg width="${this.width * this.multiplier}" height="${this.height * this.multiplier}" xmlns="http://www.w3.org/2000/svg">
+<svg width="${this.width * this.multiplier}" height="${this.height * this.multiplier}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 `
   }
 
   footer (): string {
-    return '</svg>\n'
+    let paths = ''
+
+    for (const [rgba, pathData] of this.pathsByColor) {
+      paths += `  <path d="${pathData.join(' ')}" fill-rule="evenodd" style="fill:rgba(${rgba})" />\n`
+    }
+
+    return paths + '</svg>\n'
   }
 
   path (contour: Path, pixel: Pixel): string {
+    if (contour.length === 0) return ''
+
     const m = this.multiplier
     const rgba = pixel.join(', ')
 
     const move = contour[0]
-    let path = `  <path d="M ${move[1] * m} ${move[0] * m}`
+    let path = `M ${move[1] * m} ${move[0] * m}`
     for (let i = 1; i < contour.length; i++) {
       path += ` L${contour[i][1] * m} ${contour[i][0] * m}`
     }
-    path += ` Z" style="fill:rgba(${rgba})" />\n`
+    path += ' Z'
 
-    return path
+    const paths = this.pathsByColor.get(rgba) ?? []
+    paths.push(path)
+    this.pathsByColor.set(rgba, paths)
+
+    return ''
   }
 }
 

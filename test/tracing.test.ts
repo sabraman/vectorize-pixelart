@@ -22,7 +22,27 @@ describe('ContourTracing', () => {
       expect(isStraightContour(contour)).toBe(true)
     })
 
-    expect(foundContours).toBe(6)
+    expect(foundContours).toBe(3)
+  })
+
+  it('should trace outer and inner boundaries for a shape with a hole', () => {
+    const imageData = [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ]
+
+    const image = new MockedImage(imageData, 3, 3) as any as PNGImageData
+    const ct = new ContourTracing(image)
+    const contours: Path[] = []
+
+    ct.traceContours((contour) => {
+      contours.push(contour)
+      expect(isStraightContour(contour)).toBe(true)
+    })
+
+    expect(contours).toHaveLength(2)
+    expect(contours.map(contour => contour.length).sort()).toEqual([4, 4])
   })
 })
 
@@ -62,7 +82,8 @@ class MockedImage {
   }
 
   getPixel (y: number, x: number) {
-    const gray = 255 * this.image[this.getOffset(y, x)]
-    return [gray, gray, gray, 255]
+    const value = this.image[this.getOffset(y, x)]
+    const gray = 255 * value
+    return [gray, gray, gray, value === 0 ? 0 : 255]
   }
 }

@@ -44,8 +44,9 @@ class MockedImage implements ImageLike {
 
 	getPixel(y: number, x: number): Pixel {
 		const offset = this.getOffset(y, x);
-		const gray = 255 * (this.image[offset] ?? 0);
-		return [gray, gray, gray, 255];
+		const value = this.image[offset] ?? 0;
+		const gray = 255 * value;
+		return [gray, gray, gray, value === 0 ? 0 : 255];
 	}
 }
 
