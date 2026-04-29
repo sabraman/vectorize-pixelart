@@ -4,15 +4,15 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "cd .. && bun run build && cd web && next build",
+		"build": "next build",
 		"check": "biome check .",
 		"check:unsafe": "biome check --write --unsafe .",
 		"check:write": "biome check --write .",
-		"dev": "cd .. && bun run build && cd web && next dev --turbo",
+		"dev": "next dev --turbo",
 		"preview": "bun run build && next start",
 		"start": "next start",
-		"typecheck": "cd .. && bun run build && cd web && tsc --noEmit",
-		"test": "cd .. && bun run build && cd web && vitest run",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
 		"generate-favicon": "node scripts/generate-favicon.js"
 	},
 	"dependencies": {

@@ -68,3 +68,4 @@ lib/
 !web/src/lib/**
 /*.png
 .vercel
+.env*.local
